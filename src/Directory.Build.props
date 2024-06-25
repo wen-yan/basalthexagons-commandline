@@ -1,0 +1,12 @@
+<Project>
+    <Import Project=".\Version.props"/>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <LangVersion>12</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>$(SolutionDir)bin\$(Configuration)\</OutputPath>
+    </PropertyGroup>
+</Project>

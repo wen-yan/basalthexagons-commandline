@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Root": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "Fs": {
+      "commandName": "Project",
+      "commandLineArgs": "fs --endpoint file:///test-endpoint"
+    },
+    "Ls": {
+      "commandName": "Project",
+      "commandLineArgs": "fs ls --endpoint file:///test-endpoint --color red /var/tmp"
+    }
+  }
+}

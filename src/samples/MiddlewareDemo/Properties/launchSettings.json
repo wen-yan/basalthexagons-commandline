@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Root": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}

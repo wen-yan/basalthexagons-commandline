@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DebugCodeGenerator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\samples\\SimpleUsage\\SimpleUsage.csproj"
+    }
+  }
+}
