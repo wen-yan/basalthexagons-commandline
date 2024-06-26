@@ -5,8 +5,4 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <LangVersion>12</LangVersion>
     </PropertyGroup>
-
-    <PropertyGroup>
-        <OutputPath>$(SolutionDir)bin\$(Configuration)\</OutputPath>
-    </PropertyGroup>
 </Project>

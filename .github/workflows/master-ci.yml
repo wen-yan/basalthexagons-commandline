@@ -1,0 +1,24 @@
+name: master-ci
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: setup .net core
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: 3.1.101
+            
+            - name: build with dotnet
+              run: dotnet build --configuration Release
+              working-directory: ./src
+              
+            - name: test
+              run: dotnet test
+              working-directory: ./src
