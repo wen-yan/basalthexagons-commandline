@@ -13,7 +13,7 @@ jobs:
             - name: setup .net core
               uses: actions/setup-dotnet@v4
               with:
-                dotnet-version: 3.1.101
+                dotnet-version: 8.0.106
             
             - name: build with dotnet
               run: dotnet build --configuration Release
