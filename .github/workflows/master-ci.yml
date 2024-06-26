@@ -26,5 +26,5 @@ jobs:
 
       - name: Show version
         run: |
-          git symbolic-ref --quiet --short HEAD 2>$null
+          git symbolic-ref --quiet --short HEAD 2>/dev/null
           git rev-list --count HEAD
