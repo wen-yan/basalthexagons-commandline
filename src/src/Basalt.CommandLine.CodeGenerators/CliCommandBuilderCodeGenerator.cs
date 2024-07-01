@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Basalt.CommandLine.CodeGenerator;
+namespace Basalt.CommandLine.CodeGenerators;
 
 [Generator]
 public class CliCommandBuilderCodeGenerator : IIncrementalGenerator

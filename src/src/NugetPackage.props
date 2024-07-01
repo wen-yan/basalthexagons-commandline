@@ -1,0 +1,23 @@
+<Project>
+    <PropertyGroup>
+        <Company>Basalt</Company>
+
+        <Authors>Yan Wen</Authors>
+        <Copyright>Copyright (c) Yan Wen 2024.</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/wen-yan/basalt-commandline</PackageProjectUrl>
+
+        <PackageIcon>icon.png</PackageIcon>
+        <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
+        <PackageTags>commandline;dotnet</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!-- <IncludeSymbols>true</IncludeSymbols> -->
+        <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../build/icon.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
+</Project>

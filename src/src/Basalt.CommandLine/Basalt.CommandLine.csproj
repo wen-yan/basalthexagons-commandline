@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\NugetPackage.props" />
+
     <PropertyGroup>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
     </PropertyGroup>
@@ -6,5 +9,20 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    </ItemGroup>
+
+    <!-- nuget package -->
+    <PropertyGroup>
+        <Product>Basalt.CommandLine</Product>
+        <Description>This package includes classes, methods and code generatros for using
+            System.CommandLine package to build cli commands.</Description>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None
+            Include="..\Basalt.CommandLine.CodeGenerators\bin\$(Configuration)\netstandard2.0\Basalt.CommandLine.CodeGenerators.dll"
+            Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="./readme.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 <Project>
-    <Import Project=".\Version.props"/>
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <LangVersion>12</LangVersion>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     </PropertyGroup>
 </Project>
