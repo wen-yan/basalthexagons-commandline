@@ -1,0 +1,47 @@
+name: release
+on:
+  workflow_dispatch:
+jobs:
+  master-branch:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.106
+
+      - name: Generate Release Version
+        id: generate-release-version
+        shell: pwsh
+        run: |
+          . ./src/build/build-utils.ps1
+          $Version = Get-ReleaseVersion()
+          Write-Output "Version = $Version"
+          Write-Output "version_prefix=$($Version.VersionPrefix)" >> $env:GITHUB_OUTPUT
+          Write-Output "version_suffix=$($Version.VersionSuffix)" >> $env:GITHUB_OUTPUT
+          Write-Output "version_package=$($Version.PackageVersion)" >> $env:GITHUB_OUTPUT
+
+      - name: Build
+        run: dotnet build --configuration Release /p:VersionPrefix=${{ steps.generate-release-version.outputs.version_prefix }} /p:VersionSuffix=${{ steps.generate-release-version.outputs.version_suffix }}
+        working-directory: ./src
+
+      - name: Test
+        run: dotnet test --configuration Release /p:VersionPrefix=${{ steps.generate-release-version.outputs.version_prefix }} /p:VersionSuffix=${{ steps.generate-release-version.outputs.version_suffix }}
+        working-directory: ./src
+
+      - name: Pack
+        run: dotnet pack --configuration Release /p:VersionPrefix=${{ steps.generate-release-version.outputs.version_prefix }} /p:VersionSuffix=${{ steps.generate-release-version.outputs.version_suffix }}
+        working-directory: ./src
+
+      - name: Publish
+        run: dir ./src/src/Basalt.CommandLine/bin/Release
+
+  non-master-branch:
+    if: ${{ github.ref != 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show failure message
+        run: core.setFailed('Release workflow can only work on `master` branch, current is ${{ github.ref }}'')
