@@ -8,26 +8,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Setup .net core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.106
 
-      - name: Build solution
-        run: dotnet build --configuration Release
+      - name: Build solution - ${{ matrix.configuration }}
+        run: dotnet build --configuration ${{ matrix.configuration }}
         working-directory: ./src
 
-      - name: Run tests
-        run: dotnet test --configuration Release
+      - name: Run tests - ${{ matrix.configuration }}
+        run: dotnet test --configuration ${{ matrix.configuration }}
         working-directory: ./src
-
-      - name: Show version
-        run: |
-          git symbolic-ref --quiet --short HEAD 2>/dev/null
-          git rev-list --count HEAD
