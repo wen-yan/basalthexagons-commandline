@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
 
       - name: Setup Dotnet
         uses: actions/setup-dotnet@v4
@@ -18,7 +21,7 @@ jobs:
         shell: pwsh
         run: |
           . ./src/build/build-utils.ps1
-          $Version = Get-ReleaseVersion()
+          $Version = Get-ReleaseVersion
           Write-Output "Version = $Version"
           Write-Output "version_prefix=$($Version.VersionPrefix)" >> $env:GITHUB_OUTPUT
           Write-Output "version_suffix=$($Version.VersionSuffix)" >> $env:GITHUB_OUTPUT
