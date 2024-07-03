@@ -26,3 +26,20 @@ function Get-ReleaseVersion() {
 
     return New-Object PSObject -Property @{ VersionPrefix = $VersionPrefix; VersionSuffix = $VersionSuffix; PackageVersion = $PackageVersion }
 }
+
+function Push-NugetPackageToLocalRepo() {
+    param (
+        [Parameter(Mandatory = $false)][String]$LocalNugetRepo = "nuget-local",
+        [Parameter(Mandatory = $false)][String]$Configuration = "Debug"
+    )
+    $SolutionDir = Join-Path -Path $PSCommandPath -ChildPath ../.. -Resolve
+    Write-Host "Solution directory: $SolutionDir"
+
+    $VersionPrefix = "0.1.0"
+    $VersionSuffix = "$Configuration-latest"
+    $PackageVersion = "$VersionPrefix-$VersionSuffix"
+    Write-Output "Package version: $PackageVersion"
+
+    _ExecSafe { & dotnet pack --configuration $Configuration /p:VersionPrefix=$VersionPrefix /p:VersionSuffix=$VersionSuffix $SolutionDir }
+    _ExecSafe { & dotnet nuget push "$SolutionDir/src/Basalt.CommandLine/bin/$Configuration/Basalt.CommandLine.$PackageVersion.nupkg" --source $LocalNugetRepo }
+}

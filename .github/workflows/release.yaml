@@ -2,9 +2,13 @@ name: release
 on:
   workflow_dispatch:
 jobs:
-  master-branch:
+  build-and-test:
     if: ${{ github.ref == 'refs/heads/master' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    outputs:
+      version_prefix: ${{ steps.generate-release-version.outputs.version_prefix }}
+      version_suffix: ${{ steps.generate-release-version.outputs.version_suffix }}
+      version_package: ${{ steps.generate-release-version.outputs.version_package }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,16 +39,40 @@ jobs:
         run: dotnet test --configuration Release /p:VersionPrefix=${{ steps.generate-release-version.outputs.version_prefix }} /p:VersionSuffix=${{ steps.generate-release-version.outputs.version_suffix }}
         working-directory: ./src
 
+  push-nuget-package:
+    needs: build-and-test
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.106
+
       - name: Pack
-        run: dotnet pack --configuration Release /p:VersionPrefix=${{ steps.generate-release-version.outputs.version_prefix }} /p:VersionSuffix=${{ steps.generate-release-version.outputs.version_suffix }}
+        run: dotnet pack --configuration Release /p:VersionPrefix=${{ needs.build-and-test.outputs.version_prefix }} /p:VersionSuffix=${{ needs.build-and-test.outputs.version_suffix }}
         working-directory: ./src
 
       - name: Publish
-        run: dir ./src/src/Basalt.CommandLine/bin/Release
+        run: |
+          ls -la ./src/src/Basalt.CommandLine/bin/Release
+          dotnet nuget push ./src/src/Basalt.CommandLine/bin/Release/Basalt.CommandLine.${{ needs.build-and-test.outputs.version_package }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --no-symbols true
+
+  create-release:
+    needs: [build-and-test, push-nuget-package]
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Github Release
+        run: gh release create v${{ needs.build-and-test.outputs.version_package }} --generate-notes ${{ needs.build-and-test.outputs.version_suffix == '' && '' || '--prerelease' }}
 
   non-master-branch:
     if: ${{ github.ref != 'refs/heads/master' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Show failure message
         run: core.setFailed('Release workflow can only work on `master` branch, current is ${{ github.ref }}'')
