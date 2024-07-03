@@ -40,6 +40,7 @@ function Push-NugetPackageToLocalRepo() {
     $PackageVersion = "$VersionPrefix-$VersionSuffix"
     Write-Output "Package version: $PackageVersion"
 
+    _ExecSafe { & dotnet build --configuration $Configuration /p:VersionPrefix=$VersionPrefix /p:VersionSuffix=$VersionSuffix $SolutionDir }
     _ExecSafe { & dotnet pack --configuration $Configuration /p:VersionPrefix=$VersionPrefix /p:VersionSuffix=$VersionSuffix $SolutionDir }
     _ExecSafe { & dotnet nuget push "$SolutionDir/src/Basalt.CommandLine/bin/$Configuration/Basalt.CommandLine.$PackageVersion.nupkg" --source $LocalNugetRepo }
 }

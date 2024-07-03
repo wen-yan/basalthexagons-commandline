@@ -23,6 +23,6 @@
         <None
             Include="..\Basalt.CommandLine.CodeGenerators\bin\$(Configuration)\netstandard2.0\Basalt.CommandLine.CodeGenerators.dll"
             Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="./readme.md" Pack="true" PackagePath="\" />
+        <None Include="../../../docs/Basalt.CommandLine-nuget-readme.md" Pack="true" PackagePath="\readme.md" />
     </ItemGroup>
 </Project>
