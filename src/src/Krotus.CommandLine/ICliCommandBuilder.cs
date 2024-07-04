@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace Basalt.CommandLine;
+namespace Krotus.CommandLine;
 
 public interface ICliCommandBuilder
 {

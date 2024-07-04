@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Basalt.CommandLine;
-using Basalt.CommandLine.Annotations;
+using Krotus.CommandLine;
+using Krotus.CommandLine.Annotations;
 
 namespace SimpleUsage.Commands;
 

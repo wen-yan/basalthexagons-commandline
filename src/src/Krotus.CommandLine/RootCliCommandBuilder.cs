@@ -1,7 +1,7 @@
 using System;
 using System.CommandLine;
 
-namespace Basalt.CommandLine;
+namespace Krotus.CommandLine;
 
 public abstract class RootCliCommandBuilder : CliCommandBuilder
 {

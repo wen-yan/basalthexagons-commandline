@@ -1,4 +1,4 @@
-namespace Basalt.CommandLine.Annotations;
+namespace Krotus.CommandLine.Annotations;
 
 public enum CliCommandSymbolType
 {

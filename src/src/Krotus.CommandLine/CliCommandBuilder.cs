@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
 using System.Threading;
-using Basalt.CommandLine.Annotations;
+using Krotus.CommandLine.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Basalt.CommandLine;
+namespace Krotus.CommandLine;
 
 public abstract class CliCommandBuilder : ICliCommandBuilder
 {

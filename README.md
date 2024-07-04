@@ -1,18 +1,18 @@
-# Basalt.CommandLine
+# Krotus.CommandLine
 
-## What is Basalt.CommandLine?
+## What is Krotus.CommandLine?
 
-Basalt.CommandLine is a project for building command line application using System.CommandLine package. It includes
+Krotus.CommandLine is a project for building command line application using System.CommandLine package. It includes
 - CLI command builder base classes
 - Code generators for generating CLI command builder classes
 - Base classes and interfaces for command
 - Extension methods for adding dependency injection
 
 
-Its code generator can generate code for building cli command from [command](https://github.com/wen-yan/basalt-commandline/blob/master/src/src/Basalt.CommandLine/ICommand.cs) and option classes. It supports command line Option, GlobalOption, Argument and command hierarchy.
+Its code generator can generate code for building cli command from [command](https://github.com/wen-yan/Krotus.CommandLine/blob/master/src/src/Krotus.CommandLine/ICommand.cs) and option classes. It supports command line Option, GlobalOption, Argument and command hierarchy.
 
 ## Code Sample
-Here is an example of using it to generate command line. Full sample code is [here](https://github.com/wen-yan/basalt-commandline/tree/master/src/samples/SimpleUsage).
+Here is an example of using it to generate command line. Full sample code is [here](https://github.com/wen-yan/Krotus.CommandLine/tree/master/src/samples/SimpleUsage).
 ```csharp
 #nullable disable
 partial class FsLsCommandOptions
@@ -60,5 +60,5 @@ class FsLsCommand : Command<FsLsCommandOptions>
 }
 ```
 
-More samples can be found in [samples](https://github.com/wen-yan/basalt-commandline/tree/master/src/samples).
+More samples can be found in [samples](https://github.com/wen-yan/Krotus.CommandLine/tree/master/src/samples).
 

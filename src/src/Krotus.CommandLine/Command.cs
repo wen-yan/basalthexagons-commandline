@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Basalt.CommandLine;
+namespace Krotus.CommandLine;
 
 public abstract class Command<TOptions> : ICommand<TOptions>
 {

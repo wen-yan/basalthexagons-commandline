@@ -2,7 +2,7 @@ using System;
 using System.CommandLine.Invocation;
 using System.Threading.Tasks;
 
-namespace Basalt.CommandLine;
+namespace Krotus.CommandLine;
 
 public sealed class CommandContext
 {

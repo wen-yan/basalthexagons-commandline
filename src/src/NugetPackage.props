@@ -1,11 +1,11 @@
 <Project>
     <PropertyGroup>
-        <Company>Basalt</Company>
+        <Company>Krotus</Company>
 
         <Authors>Yan Wen</Authors>
         <Copyright>Copyright (c) Yan Wen 2024.</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/wen-yan/basalt-commandline</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/wen-yan/Krotus.CommandLine</PackageProjectUrl>
 
         <PackageIcon>icon.png</PackageIcon>
         <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->

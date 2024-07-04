@@ -1,6 +1,6 @@
 ﻿using System.CommandLine;
 using System.Threading.Tasks;
-using Basalt.CommandLine;
+using Krotus.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

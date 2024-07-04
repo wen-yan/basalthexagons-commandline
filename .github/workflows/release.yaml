@@ -45,8 +45,8 @@ jobs:
 
       - name: Publish
         run: |
-          ls -la ./src/src/Basalt.CommandLine/bin/Release
-          dotnet nuget push ./src/src/Basalt.CommandLine/bin/Release/Basalt.CommandLine.${{ steps.generate-release-version.outputs.version_package }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+          ls -la ./src/src/Krotus.CommandLine/bin/Release
+          dotnet nuget push ./src/src/Krotus.CommandLine/bin/Release/Krotus.CommandLine.${{ steps.generate-release-version.outputs.version_package }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
   create-release:
     needs: [publish-nuget-package]

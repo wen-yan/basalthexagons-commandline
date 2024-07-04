@@ -1,6 +1,6 @@
 using System;
 
-namespace Basalt.CommandLine.Annotations;
+namespace Krotus.CommandLine.Annotations;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class CliCommandSymbolAttribute : Attribute

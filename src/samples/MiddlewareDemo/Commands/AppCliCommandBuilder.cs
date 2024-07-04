@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Basalt.CommandLine;
-using Basalt.CommandLine.Annotations;
+using Krotus.CommandLine;
+using Krotus.CommandLine.Annotations;
 
 namespace MiddlewareDemo.Commands;
 
@@ -10,7 +10,7 @@ partial class AppCliCommandBuilder : RootCliCommandBuilder<AppCommand, AppComman
 {
     public AppCliCommandBuilder(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        this.Description = "Basalt.CommandLine middleware demo";
+        this.Description = "Krotus.CommandLine middleware demo";
     }
 }
 

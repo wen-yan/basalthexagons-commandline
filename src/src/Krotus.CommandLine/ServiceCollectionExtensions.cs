@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
 using System.Reflection;
-using Basalt.CommandLine.Annotations;
+using Krotus.CommandLine.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Basalt.CommandLine;
+namespace Krotus.CommandLine;
 
 public static class ServiceCollectionExtensions
 {

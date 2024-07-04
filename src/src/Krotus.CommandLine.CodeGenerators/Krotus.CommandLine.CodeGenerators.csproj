@@ -22,13 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Basalt.CommandLine\Annotations\CliCommandBuilderAttribute.cs">
+    <Compile Include="..\Krotus.CommandLine\Annotations\CliCommandBuilderAttribute.cs">
       <Link>CliCommandBuilderAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Basalt.CommandLine\Annotations\CliCommandSymbolAttribute.cs">
+    <Compile Include="..\Krotus.CommandLine\Annotations\CliCommandSymbolAttribute.cs">
       <Link>CliCommandSymbolAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Basalt.CommandLine\Annotations\CliCommandSymbolType.cs">
+    <Compile Include="..\Krotus.CommandLine\Annotations\CliCommandSymbolType.cs">
       <Link>CliCommandSymbolType.cs</Link>
     </Compile>
   </ItemGroup>

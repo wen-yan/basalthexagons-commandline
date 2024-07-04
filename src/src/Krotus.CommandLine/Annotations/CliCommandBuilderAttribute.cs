@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Basalt.CommandLine.Annotations;
+namespace Krotus.CommandLine.Annotations;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public class CliCommandBuilderAttribute : Attribute
