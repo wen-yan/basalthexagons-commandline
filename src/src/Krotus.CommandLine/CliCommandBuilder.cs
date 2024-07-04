@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Krotus.CommandLine;
 
+// CliCommandBuilder
 public abstract class CliCommandBuilder : ICliCommandBuilder
 {
     private readonly Lazy<Command> _command;
