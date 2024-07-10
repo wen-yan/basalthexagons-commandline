@@ -8,8 +8,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Krotus.CommandLine;
 
+/// <summary>
+/// Utility class for Krotus.CommandLine dependency injection
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Register required components to use Krotus.CommandLine
+    /// </summary>
+    /// <param name="serviceCollection">IServiceCollection object</param>
+    /// <param name="rootCommandName">Root cli command name, default is `CliCommandBuilderAttribute.DefaultRootCommandName`</param>
+    /// <param name="assembly">Assembly in which search cli command builders and commands</param>
+    /// <returns>IServiceCollection object</returns>
     public static IServiceCollection AddCommandLineSupport(this IServiceCollection serviceCollection, string rootCommandName = CliCommandBuilderAttribute.DefaultRootCommandName, Assembly? assembly = null)
     {
         return serviceCollection

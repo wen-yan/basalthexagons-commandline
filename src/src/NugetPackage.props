@@ -8,7 +8,7 @@
         <PackageProjectUrl>https://github.com/wen-yan/Krotus.CommandLine</PackageProjectUrl>
 
         <PackageIcon>icon.png</PackageIcon>
-        <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageTags>commandline;dotnet</PackageTags>
     </PropertyGroup>
 
