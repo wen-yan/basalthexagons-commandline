@@ -29,7 +29,7 @@ class FsCommand : Command<FsCommandOptions>
     {
     }
 
-    public override async ValueTask Execute()
+    public override async ValueTask ExecuteAsync()
     {
         await Console.Out.WriteLineAsync($"FsCommand output, endpoint: {this.Options.Endpoint}");
     }

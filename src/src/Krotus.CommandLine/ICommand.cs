@@ -30,5 +30,5 @@ public interface ICommand<TOptions> : IAsyncDisposable
     /// Execute command.
     /// </summary>
     /// <returns>ValueTask instance</returns>
-    ValueTask Execute();
+    ValueTask ExecuteAsync();
 }

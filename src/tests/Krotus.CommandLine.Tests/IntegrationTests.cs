@@ -50,7 +50,7 @@ public class IntegrationTests
             class FsCommand : Command<FsCommandOptions>
             {
                 public FsCommand(CommandContext commandContext) : base(commandContext) {}
-                public override async ValueTask Execute() => await Console.Out.WriteLineAsync($"FsCommand output, endpoint: {this.Options.Endpoint}");
+                public override async ValueTask ExecuteAsync() => await Console.Out.WriteLineAsync($"FsCommand output, endpoint: {this.Options.Endpoint}");
             }
 
             #nullable disable
@@ -73,7 +73,7 @@ public class IntegrationTests
             class FsLsCommand : Command<FsLsCommandOptions>
             {
                 public FsLsCommand(CommandContext commandContext) : base(commandContext) {}
-                public override async ValueTask Execute() => Console.WriteLine($"FsLsCommand output, endpoint: {this.Options.Endpoint}, target: {this.Options.Directory}");
+                public override async ValueTask ExecuteAsync() => Console.WriteLine($"FsLsCommand output, endpoint: {this.Options.Endpoint}, target: {this.Options.Directory}");
             }
             """;
 
@@ -106,7 +106,7 @@ public class IntegrationTests
             class AppCommand : Command<AppCommandOptions>
             {
                 public AppCommand(CommandContext commandContext) : base(commandContext) {}
-                public override async ValueTask Execute() => await Console.Out.WriteLineAsync($"AppCommand output, endpoint: {this.Options.Endpoint}");
+                public override async ValueTask ExecuteAsync() => await Console.Out.WriteLineAsync($"AppCommand output, endpoint: {this.Options.Endpoint}");
             }
             """;
 

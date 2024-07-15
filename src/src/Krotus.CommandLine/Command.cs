@@ -28,7 +28,7 @@ public abstract class Command<TOptions> : ICommand<TOptions>
     protected TOptions Options => (TOptions)this.CommandContext.Options!;
 
     /// <inheritdoc />
-    public abstract ValueTask Execute();
+    public abstract ValueTask ExecuteAsync();
 
     /// <inheritdoc />
     public virtual ValueTask DisposeAsync() => default;

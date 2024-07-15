@@ -26,7 +26,7 @@ class AppCommand : Command<AppCommandOptions>
     {
     }
 
-    public override async ValueTask Execute()
+    public override async ValueTask ExecuteAsync()
     {
         await Console.Out.WriteLineAsync("this is the root command");
     }

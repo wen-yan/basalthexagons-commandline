@@ -207,7 +207,7 @@ partial class {cliCommandBuilderType.OptionsTypeSymbol.Name}
             {cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString()} command =
                 scope.ServiceProvider.GetRequiredService<{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString()}>();
 
-            await command.Execute();
+            await command.ExecuteAsync();
         }});";
         }
 

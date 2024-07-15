@@ -35,13 +35,13 @@ class FsLsCommand : Command<FsLsCommandOptions>
 
     private IDemoService DemoService { get; }
 
-    public override async ValueTask Execute()
+    public override async ValueTask ExecuteAsync()
     {
         ConsoleColor currentColor = Console.ForegroundColor;
         Console.ForegroundColor = this.Options.Color;
         try
         {
-            await this.DemoService.WriteLine($"FsLsCommand output, endpoint: {this.Options.Endpoint}, target: {this.Options.Directory}");
+            await this.DemoService.WriteLineAsync($"FsLsCommand output, endpoint: {this.Options.Endpoint}, target: {this.Options.Directory}");
         }
         finally
         {

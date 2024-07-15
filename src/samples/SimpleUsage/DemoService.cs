@@ -5,12 +5,12 @@ namespace SimpleUsage;
 
 interface IDemoService
 {
-    ValueTask WriteLine(string message);
+    ValueTask WriteLineAsync(string message);
 }
 
 class DemoService : IDemoService
 {
-    public async ValueTask WriteLine(string message)
+    public async ValueTask WriteLineAsync(string message)
     {
         await Console.Out.WriteLineAsync(message);
     }
