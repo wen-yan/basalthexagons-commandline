@@ -1,3 +1,6 @@
+[![ci](https://github.com/wen-yan/Krotus.CommandLine/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/wen-yan/Krotus.CommandLine/actions/workflows/ci.yaml)
+[![release](https://github.com/wen-yan/Krotus.CommandLine/actions/workflows/release.yaml/badge.svg?branch=master)](https://github.com/wen-yan/Krotus.CommandLine/actions/workflows/release.yaml)
+
 # Krotus.CommandLine
 
 ## What is Krotus.CommandLine?

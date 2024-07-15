@@ -12,6 +12,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiddlewareDemo", "samples\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krotus.CommandLine.CodeGenerators", "src\Krotus.CommandLine.CodeGenerators\Krotus.CommandLine.CodeGenerators.csproj", "{C6894AA1-F761-4EFE-9040-6AF1984D2D54}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8A546FE5-2F82-4D70-8957-0D84A0C15032}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krotus.CommandLine.Tests", "tests\Krotus.CommandLine.Tests\Krotus.CommandLine.Tests.csproj", "{FD170E37-C3D8-47F8-9819-84F37199B39F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,11 +38,16 @@ Global
 		{C6894AA1-F761-4EFE-9040-6AF1984D2D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6894AA1-F761-4EFE-9040-6AF1984D2D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6894AA1-F761-4EFE-9040-6AF1984D2D54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD170E37-C3D8-47F8-9819-84F37199B39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD170E37-C3D8-47F8-9819-84F37199B39F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD170E37-C3D8-47F8-9819-84F37199B39F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD170E37-C3D8-47F8-9819-84F37199B39F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FD8907E3-BCFB-4ABC-89E7-931457E08E59} = {A3408B63-DF96-496D-8E77-FDFC2AB9AD71}
 		{25093DEF-7C75-409D-BCF2-BCEC7A7E1F9E} = {56BC05A1-64F1-4BA6-832F-6A356014D092}
 		{5CA7F5D4-CBCB-4F5A-810C-E8FD0519CC92} = {56BC05A1-64F1-4BA6-832F-6A356014D092}
 		{C6894AA1-F761-4EFE-9040-6AF1984D2D54} = {A3408B63-DF96-496D-8E77-FDFC2AB9AD71}
+		{FD170E37-C3D8-47F8-9819-84F37199B39F} = {8A546FE5-2F82-4D70-8957-0D84A0C15032}
 	EndGlobalSection
 EndGlobal
