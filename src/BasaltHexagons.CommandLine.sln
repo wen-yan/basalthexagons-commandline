@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krotus.CommandLine", "src\Krotus.CommandLine\Krotus.CommandLine.csproj", "{FD8907E3-BCFB-4ABC-89E7-931457E08E59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasaltHexagons.CommandLine", "src\BasaltHexagons.CommandLine\BasaltHexagons.CommandLine.csproj", "{FD8907E3-BCFB-4ABC-89E7-931457E08E59}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A3408B63-DF96-496D-8E77-FDFC2AB9AD71}"
 EndProject
@@ -10,11 +10,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUsage", "samples\Simp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiddlewareDemo", "samples\MiddlewareDemo\MiddlewareDemo.csproj", "{5CA7F5D4-CBCB-4F5A-810C-E8FD0519CC92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krotus.CommandLine.CodeGenerators", "src\Krotus.CommandLine.CodeGenerators\Krotus.CommandLine.CodeGenerators.csproj", "{C6894AA1-F761-4EFE-9040-6AF1984D2D54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasaltHexagons.CommandLine.CodeGenerators", "src\BasaltHexagons.CommandLine.CodeGenerators\BasaltHexagons.CommandLine.CodeGenerators.csproj", "{C6894AA1-F761-4EFE-9040-6AF1984D2D54}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8A546FE5-2F82-4D70-8957-0D84A0C15032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krotus.CommandLine.Tests", "tests\Krotus.CommandLine.Tests\Krotus.CommandLine.Tests.csproj", "{FD170E37-C3D8-47F8-9819-84F37199B39F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasaltHexagons.CommandLine.Tests", "tests\BasaltHexagons.CommandLine.Tests\BasaltHexagons.CommandLine.Tests.csproj", "{FD170E37-C3D8-47F8-9819-84F37199B39F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Krotus.CommandLine.Annotations;
+namespace BasaltHexagons.CommandLine.Annotations;
 
 /// <summary>
 /// Attribute class for marking cli command builder class.

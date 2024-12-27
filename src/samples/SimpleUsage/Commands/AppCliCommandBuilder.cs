@@ -1,6 +1,6 @@
 using System;
-using Krotus.CommandLine;
-using Krotus.CommandLine.Annotations;
+using BasaltHexagons.CommandLine;
+using BasaltHexagons.CommandLine.Annotations;
 
 namespace SimpleUsage.Commands;
 
@@ -9,6 +9,6 @@ partial class AppCliCommandBuilder : RootCliCommandBuilder
 {
     public AppCliCommandBuilder(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        this.Description = "Krotus.CommandLine simple usage sample";
+        this.Description = "BasaltHexagons.CommandLine simple usage sample";
     }
 }

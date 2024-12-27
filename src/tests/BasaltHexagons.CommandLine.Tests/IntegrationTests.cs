@@ -5,13 +5,13 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
-using Krotus.CommandLine.CodeGenerators;
+using BasaltHexagons.CommandLine.CodeGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Krotus.CommandLine.Tests;
+namespace BasaltHexagons.CommandLine.Tests;
 
 [TestClass]
 public class IntegrationTests
@@ -26,7 +26,7 @@ public class IntegrationTests
             {
                 public AppCliCommandBuilder(IServiceProvider serviceProvider) : base(serviceProvider)
                 {
-                    this.Description = "Krotus.CommandLine simple usage sample";
+                    this.Description = "BasaltHexagons.CommandLine simple usage sample";
                 }
             }
 
@@ -91,7 +91,7 @@ public class IntegrationTests
             {
                 public AppCliCommandBuilder(IServiceProvider serviceProvider) : base(serviceProvider)
                 {
-                    this.Description = "Krotus.CommandLine simple usage sample";
+                    this.Description = "BasaltHexagons.CommandLine simple usage sample";
                     this.EndpointOption = new(new[] {"--endpoint"}, "endpoint of the file system") { IsRequired = true };
                 }
             }
@@ -121,8 +121,8 @@ public class IntegrationTests
               using System.CommandLine;
               using System.IO;
               using System.Threading.Tasks;
-              using Krotus.CommandLine;
-              using Krotus.CommandLine.Annotations;
+              using BasaltHexagons.CommandLine;
+              using BasaltHexagons.CommandLine.Annotations;
               using Microsoft.Extensions.DependencyInjection;
               using Microsoft.Extensions.Hosting;
 
@@ -174,7 +174,7 @@ public class IntegrationTests
         string assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         IEnumerable<string> referencePaths = Directory.EnumerateFiles(assemblyDir)
             .Where(x => Path.GetExtension(x) == ".dll")
-            .Where(x => !x.EndsWith("Krotus.CommandLine.CodeGenerators.dll"))
+            .Where(x => !x.EndsWith("BasaltHexagons.CommandLine.CodeGenerators.dll"))
             .Append(typeof(object).GetTypeInfo().Assembly.Location)
             .Append(typeof(Console).GetTypeInfo().Assembly.Location)
             .Append(Path.Combine(basePath, "System.Runtime.dll"))

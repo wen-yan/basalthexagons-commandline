@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
 using System.Threading;
-using Krotus.CommandLine.Annotations;
+using BasaltHexagons.CommandLine.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Krotus.CommandLine;
+namespace BasaltHexagons.CommandLine;
 
 /// <summary>
 /// Base class of cli command builder.

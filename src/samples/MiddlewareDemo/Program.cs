@@ -4,7 +4,7 @@ using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Krotus.CommandLine;
+using BasaltHexagons.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

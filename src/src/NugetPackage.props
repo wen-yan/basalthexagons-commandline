@@ -1,11 +1,11 @@
 <Project>
     <PropertyGroup>
-        <Company>Krotus</Company>
+        <Company>BasaltHexagons</Company>
 
         <Authors>Yan Wen</Authors>
         <Copyright>Copyright (c) Yan Wen 2024.</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/wen-yan/Krotus.CommandLine</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/wen-yan/basalthexagons-commandline</PackageProjectUrl>
 
         <PackageIcon>icon.png</PackageIcon>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -18,6 +18,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="../../build/krotus.png" Pack="true" PackagePath="\icon.png" />
+        <None Include="../../build/basalthexagons.png" Pack="true" PackagePath="\icon.png" />
     </ItemGroup>
 </Project>

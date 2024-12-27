@@ -2,7 +2,7 @@ using System;
 using System.CommandLine.Invocation;
 using System.Threading.Tasks;
 
-namespace Krotus.CommandLine;
+namespace BasaltHexagons.CommandLine;
 
 /// <summary>
 /// Command context. Available during command lifecycle.

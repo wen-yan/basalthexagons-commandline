@@ -1,7 +1,7 @@
 using System;
 using System.CommandLine;
 
-namespace Krotus.CommandLine;
+namespace BasaltHexagons.CommandLine;
 
 /// <summary>
 /// Cli command builder for root command.

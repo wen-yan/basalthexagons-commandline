@@ -42,5 +42,5 @@ function Push-NugetPackageToLocalRepo() {
 
     _ExecSafe { & dotnet build --configuration $Configuration /p:VersionPrefix=$VersionPrefix /p:VersionSuffix=$VersionSuffix $SolutionDir }
     _ExecSafe { & dotnet pack --configuration $Configuration /p:VersionPrefix=$VersionPrefix /p:VersionSuffix=$VersionSuffix $SolutionDir }
-    _ExecSafe { & dotnet nuget push "$SolutionDir/src/Krotus.CommandLine/bin/$Configuration/Krotus.CommandLine.$PackageVersion.nupkg" --source $LocalNugetRepo }
+    _ExecSafe { & dotnet nuget push "$SolutionDir/src/BasaltHexagons.CommandLine/bin/$Configuration/BasaltHexagons.CommandLine.$PackageVersion.nupkg" --source $LocalNugetRepo }
 }

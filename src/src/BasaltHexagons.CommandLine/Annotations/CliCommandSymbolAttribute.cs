@@ -1,6 +1,6 @@
 using System;
 
-namespace Krotus.CommandLine.Annotations;
+namespace BasaltHexagons.CommandLine.Annotations;
 
 /// <summary>
 /// Attribution class for configuring command options properties' command line token type.

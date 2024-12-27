@@ -5,4 +5,4 @@ This package includes helper classes, methods and code generators for building c
 - Extension methods for adding dependency injection
 
 
-More information can be found from https://github.com/wen-yan/Krotus.CommandLine
+More information can be found from https://github.com/wen-yan/basalthexagons-commandline

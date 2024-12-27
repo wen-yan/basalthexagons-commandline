@@ -1,4 +1,4 @@
-namespace Krotus.CommandLine.Annotations;
+namespace BasaltHexagons.CommandLine.Annotations;
 
 /// <summary>
 /// Enum of command line token type.

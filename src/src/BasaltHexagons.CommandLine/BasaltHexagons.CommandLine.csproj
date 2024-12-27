@@ -13,7 +13,7 @@
 
     <!-- nuget package -->
     <PropertyGroup>
-        <Product>Krotus.CommandLine</Product>
+        <Product>BasaltHexagons.CommandLine</Product>
         <Description>This package includes classes, methods and code generatros for using
             System.CommandLine package to build cli commands.</Description>
         <PackageReadmeFile>readme.md</PackageReadmeFile>
@@ -21,8 +21,8 @@
 
     <ItemGroup>
         <None
-            Include="..\Krotus.CommandLine.CodeGenerators\bin\$(Configuration)\netstandard2.0\Krotus.CommandLine.CodeGenerators.dll"
+            Include="..\BasaltHexagons.CommandLine.CodeGenerators\bin\$(Configuration)\netstandard2.0\BasaltHexagons.CommandLine.CodeGenerators.dll"
             Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="../../../docs/Krotus.CommandLine-nuget-readme.md" Pack="true" PackagePath="\readme.md" />
+        <None Include="../../../docs/BasaltHexagons.CommandLine-nuget-readme.md" Pack="true" PackagePath="\readme.md" />
     </ItemGroup>
 </Project>

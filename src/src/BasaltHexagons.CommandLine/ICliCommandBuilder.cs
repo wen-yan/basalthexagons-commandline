@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace Krotus.CommandLine;
+namespace BasaltHexagons.CommandLine;
 
 /// <summary>
 /// Cli command builder interface. All cli command builders should implement it.

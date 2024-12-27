@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Krotus.CommandLine.CodeGenerators;
+namespace BasaltHexagons.CommandLine.CodeGenerators;
 
 internal static class SymbolExtensions
 {

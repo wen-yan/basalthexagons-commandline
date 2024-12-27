@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
 using System.Reflection;
-using Krotus.CommandLine.Annotations;
+using BasaltHexagons.CommandLine.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Krotus.CommandLine;
+namespace BasaltHexagons.CommandLine;
 
 /// <summary>
-/// Utility class for Krotus.CommandLine dependency injection
+/// Utility class for BasaltHexagons.CommandLine dependency injection
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Register required components to use Krotus.CommandLine
+    /// Register required components to use BasaltHexagons.CommandLine
     /// </summary>
     /// <param name="serviceCollection">IServiceCollection object</param>
     /// <param name="rootCommandName">Root cli command name, default is `CliCommandBuilderAttribute.DefaultRootCommandName`</param>

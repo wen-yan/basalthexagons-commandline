@@ -19,8 +19,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\samples\SimpleUsage\SimpleUsage.csproj" />
-      <ProjectReference Include="..\..\src\Krotus.CommandLine.CodeGenerators\Krotus.CommandLine.CodeGenerators.csproj" />
-      <ProjectReference Include="..\..\src\Krotus.CommandLine\Krotus.CommandLine.csproj" />
+      <ProjectReference Include="..\..\src\BasaltHexagons.CommandLine.CodeGenerators\BasaltHexagons.CommandLine.CodeGenerators.csproj" />
+      <ProjectReference Include="..\..\src\BasaltHexagons.CommandLine\BasaltHexagons.CommandLine.csproj" />
     </ItemGroup>
 
 </Project>

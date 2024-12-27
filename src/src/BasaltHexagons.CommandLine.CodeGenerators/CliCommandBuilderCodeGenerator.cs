@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Krotus.CommandLine.Annotations;
+using BasaltHexagons.CommandLine.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Krotus.CommandLine.CodeGenerators;
+namespace BasaltHexagons.CommandLine.CodeGenerators;
 
 [Generator]
 public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
@@ -77,7 +77,7 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
                     foreach (OptionsProperty property in cliCommandBuilderType.OptionsProperties.Where(x => x.CliCommandSymbolType == CliCommandSymbolType.GlobalOption))
                     {
                         yield return $"// from {cliCommandBuilderType.CliCommandBuilderTypeSymbol}";
-                        yield return "[global::Krotus.CommandLine.Annotations.CliCommandSymbol(global::Krotus.CommandLine.Annotations.CliCommandSymbolType.FromGlobalOption)]";
+                        yield return "[global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbol(global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbolType.FromGlobalOption)]";
                         yield return $"public {property.PropertySymbol.Type.ToFullyQualifiedFormatString()} {property.PropertySymbol.Name} {{ get; init; }}";
                     }
                 }
@@ -200,7 +200,7 @@ partial class {cliCommandBuilderType.OptionsTypeSymbol.Name}
 
             await using global::Microsoft.Extensions.DependencyInjection.AsyncServiceScope scope = this.ServiceProvider.CreateAsyncScope();
 
-            global::Krotus.CommandLine.CommandContext context = scope.ServiceProvider.GetRequiredService<global::Krotus.CommandLine.CommandContext>();
+            global::BasaltHexagons.CommandLine.CommandContext context = scope.ServiceProvider.GetRequiredService<global::BasaltHexagons.CommandLine.CommandContext>();
             context.InvocationContext = invocationContext;
             context.Options = options;
 
@@ -275,7 +275,7 @@ partial class {cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}
                 if (baseTypeSymbol == null)
                     return null;
 
-                if (baseTypeSymbol is { Name: "CliCommandBuilder", ContainingNamespace: { Name: "CommandLine", ContainingNamespace: { Name: "Krotus" } } })
+                if (baseTypeSymbol is { Name: "CliCommandBuilder", ContainingNamespace: { Name: "CommandLine", ContainingNamespace: { Name: "BasaltHexagons" } } })
                     return baseTypeSymbol;
 
                 typeSymbol = baseTypeSymbol;

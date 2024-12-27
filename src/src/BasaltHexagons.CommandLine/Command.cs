@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Krotus.CommandLine;
+namespace BasaltHexagons.CommandLine;
 
 /// <summary>
 /// Base class of command.
