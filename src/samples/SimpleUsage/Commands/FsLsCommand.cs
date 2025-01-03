@@ -5,15 +5,14 @@ using BasaltHexagons.CommandLine.Annotations;
 
 namespace SimpleUsage.Commands;
 
-#nullable disable
 partial class FsLsCommandOptions
 {
+    [CliCommandSymbol]
     public ConsoleColor Color { get; init; }
 
     [CliCommandSymbol(CliCommandSymbolType.Argument)]
     public string Directory { get; init; }
 }
-#nullable restore
 
 [CliCommandBuilder("ls", typeof(FsCliCommandBuilder))]
 partial class FsLsCliCommandBuilder : CliCommandBuilder<FsLsCommand, FsLsCommandOptions>

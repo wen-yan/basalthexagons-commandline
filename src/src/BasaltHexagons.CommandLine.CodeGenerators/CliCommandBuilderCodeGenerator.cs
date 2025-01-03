@@ -7,6 +7,7 @@ using BasaltHexagons.CommandLine.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace BasaltHexagons.CommandLine.CodeGenerators;
 
@@ -55,9 +56,12 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
         if (baseTypeSymbol == null)
             return null;
 
+        LanguageVersion languageVersion = ((CSharpParseOptions)context.TargetNode.SyntaxTree.Options).LanguageVersion;
+        NullableContextOptions nullableOptions = context.SemanticModel.Compilation.Options.NullableContextOptions;
+
         try
         {
-            return new CliCommandBuilderType(commandBuilderTypeSymbol, baseTypeSymbol);
+            return new CliCommandBuilderType(languageVersion, nullableOptions, commandBuilderTypeSymbol, baseTypeSymbol);
         }
         catch
         {
@@ -67,200 +71,259 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
 
     private static void GenerateOutput(SourceProductionContext context, CliCommandBuilderType cliCommandBuilderType)
     {
-        static string GenerateOptionsClass(CliCommandBuilderType cliCommandBuilderType)
+        if (cliCommandBuilderType.LanguageVersion < LanguageVersion.CSharp5)
         {
-            static IEnumerable<string> GenerateFromAncestors(CliCommandBuilderType cliCommandBuilderType)
+            AddSource(context, cliCommandBuilderType.CliCommandBuilderTypeSymbol, "#error BasaltHexagons.CommandLine doesn't support csharp version < 5");
+        }
+        else
+        {
+            string code = $"""
+                           {GenerateOptionsClass(context, cliCommandBuilderType)}
+                           {GenerateBuilderClass(context, cliCommandBuilderType)}
+                           """;
+
+            AddSource(context, cliCommandBuilderType.CliCommandBuilderTypeSymbol, code);
+        }
+    }
+
+    private static string GenerateOptionsClass(SourceProductionContext context, CliCommandBuilderType cliCommandBuilderType)
+    {
+        static IEnumerable<(CliCommandBuilderType CliCommandBuilderType, OptionsProperty OptionsProperty)> GetPropertiesFromAncestors(CliCommandBuilderType cliCommandBuilderType)
+        {
+            while (cliCommandBuilderType.Parent != null)
             {
-                while (cliCommandBuilderType.Parent != null)
-                {
-                    cliCommandBuilderType = cliCommandBuilderType.Parent;
-                    foreach (OptionsProperty property in cliCommandBuilderType.OptionsProperties.Where(x => x.CliCommandSymbolType == CliCommandSymbolType.GlobalOption))
-                    {
-                        yield return $"// from {cliCommandBuilderType.CliCommandBuilderTypeSymbol}";
-                        yield return "[global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbol(global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbolType.FromGlobalOption)]";
-                        yield return $"public {property.PropertySymbol.Type.ToFullyQualifiedFormatString()} {property.PropertySymbol.Name} {{ get; init; }}";
-                    }
-                }
+                cliCommandBuilderType = cliCommandBuilderType.Parent;
+                foreach (OptionsProperty property in cliCommandBuilderType.OptionsProperties.Where(x => x.CliCommandSymbolType == CliCommandSymbolType.GlobalOption))
+                    yield return (cliCommandBuilderType, property);
             }
-
-            if (cliCommandBuilderType.OptionsTypeSymbol == null)
-                return string.Empty;
-            var properties = GenerateFromAncestors(cliCommandBuilderType);
-
-            return @$"
-#nullable disable
-partial class {cliCommandBuilderType.OptionsTypeSymbol.Name}
-{{
-    {string.Join("\r\n    ", properties)}
-}}
-#nullable restore
-";
         }
 
-        string GenerateCommandLineSymbolProperties()
+        static IEnumerable<string> GeneratePropertiesFromAncestors(LanguageVersion languageVersion, IEnumerable<(CliCommandBuilderType, OptionsProperty)> properties)
         {
-            static string? GenerateCommandLineSymbolProperty(OptionsProperty property)
+            foreach ((CliCommandBuilderType cliCommandBuilderType, OptionsProperty property) in properties)
             {
-                return property.CliCommandSymbolType switch
-                {
-                    CliCommandSymbolType.Option => $"private global::System.CommandLine.Option<{property.PropertySymbol.Type.ToFullyQualifiedFormatString()}> {property.PropertySymbol.Name}Option {{ get; }}",
-                    CliCommandSymbolType.GlobalOption => $"internal global::System.CommandLine.Option<{property.PropertySymbol.Type.ToFullyQualifiedFormatString()}> {property.PropertySymbol.Name}Option {{ get; }}",
-                    CliCommandSymbolType.Argument => $"private global::System.CommandLine.Argument<{property.PropertySymbol.Type.ToFullyQualifiedFormatString()}> {property.PropertySymbol.Name}Argument {{ get; }}",
-                    CliCommandSymbolType.FromGlobalOption => null,
-                    _ => throw new ArgumentOutOfRangeException()
-                };
+                yield return $"// from {cliCommandBuilderType.CliCommandBuilderTypeSymbol}";
+                yield return "[global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbol(global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbolType.FromGlobalOption)]";
+                yield return $"public {property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)} {property.PropertySymbol.Name} {{ get; }}";
             }
+        }
 
+        if (cliCommandBuilderType.OptionsTypeSymbol == null)
+            return string.Empty;
+
+        List<(CliCommandBuilderType CliCommandBuilderType, OptionsProperty OptionsProperty)> optionsPropertiesFromAncestors = GetPropertiesFromAncestors(cliCommandBuilderType).ToList();
+        List<OptionsProperty> optionsAllProperties = cliCommandBuilderType.OptionsProperties.Concat(optionsPropertiesFromAncestors.Select(x => x.OptionsProperty)).ToList();
+
+        string argumentsStr = string.Join(",\r\n", optionsAllProperties
+            .Select(property => $"{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)} {property.PropertySymbol.Name}"));
+
+        string propertyListInitStr = string.Join("\r\n", optionsAllProperties
+            .Select(property => $"this.{property.PropertySymbol.Name} = {property.PropertySymbol.Name};"));
+
+        string propertyListStr = string.Join("\r\n", GeneratePropertiesFromAncestors(cliCommandBuilderType.LanguageVersion, optionsPropertiesFromAncestors));
+
+        return $$"""
+                 namespace {{cliCommandBuilderType.OptionsTypeSymbol.ContainingNamespace}}
+                 {
+                     partial class {{cliCommandBuilderType.OptionsTypeSymbol.Name}}
+                     {
+                         public {{cliCommandBuilderType.OptionsTypeSymbol.Name}}(
+                             {{argumentsStr}}
+                             )
+                         {
+                             {{propertyListInitStr}}
+                         }
+                         {{propertyListStr}}
+                     }
+                 }
+                 """;
+    }
+
+    private static string GenerateBuilderClass(SourceProductionContext context, CliCommandBuilderType cliCommandBuilderType)
+    {
+        static string GenerateCommandLineSymbolProperties(CliCommandBuilderType cliCommandBuilderType)
+        {
             if (cliCommandBuilderType.OptionsTypeSymbol == null)
                 return string.Empty;
 
             var properties = cliCommandBuilderType.OptionsProperties
-                .Select(x => GenerateCommandLineSymbolProperty(x))
-                .Where(x => x != null)
-                .Cast<string>();
-            return string.Join("\r\n    ", properties);
-        }
-
-        string GenerateEnrichCommand()
-        {
-            static string? GenerateOptionsPropertyEnrich(OptionsProperty property)
-            {
-                return property.CliCommandSymbolType switch
+                .Select(property => property.CliCommandSymbolType switch
                 {
-                    CliCommandSymbolType.Option => $"command.AddOption({property.PropertySymbol.Name}Option);",
-                    CliCommandSymbolType.GlobalOption => $"command.AddGlobalOption({property.PropertySymbol.Name}Option);",
-                    CliCommandSymbolType.Argument => $"command.AddArgument({property.PropertySymbol.Name}Argument);",
+                    CliCommandSymbolType.Option => GenerateReadonlyProperty(cliCommandBuilderType.LanguageVersion, "private",
+                        $"global::System.CommandLine.Option<{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)}>", $"{property.PropertySymbol.Name}Option"),
+
+                    CliCommandSymbolType.GlobalOption => GenerateReadonlyProperty(cliCommandBuilderType.LanguageVersion, "internal",
+                        $"global::System.CommandLine.Option<{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)}>", $"{property.PropertySymbol.Name}Option"),
+
+                    CliCommandSymbolType.Argument => GenerateReadonlyProperty(cliCommandBuilderType.LanguageVersion, "private",
+                        $"global::System.CommandLine.Argument<{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)}>", $"{property.PropertySymbol.Name}Argument"),
+
                     CliCommandSymbolType.FromGlobalOption => null,
                     _ => throw new ArgumentOutOfRangeException()
-                };
-            }
+                })
+                .Where(x => x != null)
+                .Cast<string>();
+            return string.Join("\r\n", properties);
+        }
 
+        static string GenerateEnrichCommand(CliCommandBuilderType cliCommandBuilderType)
+        {
             if (cliCommandBuilderType.OptionsTypeSymbol == null)
                 return string.Empty;
 
             var properties = cliCommandBuilderType.OptionsProperties
-                .Select(x => GenerateOptionsPropertyEnrich(x))
+                .Select(property => property.CliCommandSymbolType switch
+                {
+                    CliCommandSymbolType.Option => $"cliCommand.AddOption({property.PropertySymbol.Name}Option);",
+                    CliCommandSymbolType.GlobalOption => $"cliCommand.AddGlobalOption({property.PropertySymbol.Name}Option);",
+                    CliCommandSymbolType.Argument => $"cliCommand.AddArgument({property.PropertySymbol.Name}Argument);",
+                    CliCommandSymbolType.FromGlobalOption => null,
+                    _ => throw new ArgumentOutOfRangeException()
+                })
                 .Where(x => x != null)
                 .Cast<string>();
-            return string.Join("\r\n        ", properties);
+            return string.Join("\r\n", properties);
         }
 
-        string GenerateOptionPropertiesInit()
+        static string GenerateCommandHandler(CliCommandBuilderType cliCommandBuilderType)
         {
-            static IEnumerable<string> OptionPropertiesInit(CliCommandBuilderType builder)
+            string GenerateOptionPropertiesInit()
             {
-                foreach (OptionsProperty property in builder.OptionsProperties)
+                static IEnumerable<string> OptionPropertiesInit(CliCommandBuilderType builder)
                 {
-                    string name = property.PropertySymbol.Name;
-                    string? result = property.CliCommandSymbolType switch
-                    {
-                        CliCommandSymbolType.Option => $"{name} = parseResult.GetValueForOption(this.{name}Option)",
-                        CliCommandSymbolType.GlobalOption => $"{name} = parseResult.GetValueForOption(this.{name}Option)",
-                        CliCommandSymbolType.Argument => $"{name} = parseResult.GetValueForArgument(this.{name}Argument)",
-                        _ => null,
-                    };
-                    if (result != null)
-                        yield return result;
-                }
-            }
-
-            static IEnumerable<string> GenerateOptionPropertiesFromAncestors(CliCommandBuilderType builder)
-            {
-                while (builder.Parent != null)
-                {
-                    foreach (OptionsProperty property in builder.Parent.OptionsProperties.Where(x => x.CliCommandSymbolType == CliCommandSymbolType.GlobalOption))
+                    foreach (OptionsProperty property in builder.OptionsProperties)
                     {
                         string name = property.PropertySymbol.Name;
-                        yield return $"{name} = parseResult.GetValueForOption(this.GetRequiredParentBuilder<{property.CliCommandBuildTypeSymbol.CliCommandBuilderTypeSymbol.ToFullyQualifiedFormatString()}>().{name}Option)";
+                        string? result = property.CliCommandSymbolType switch
+                        {
+                            CliCommandSymbolType.Option => $"{name}: parseResult.GetValueForOption(this.{name}Option)",
+                            CliCommandSymbolType.GlobalOption => $"{name}: parseResult.GetValueForOption(this.{name}Option)",
+                            CliCommandSymbolType.Argument => $"{name}: parseResult.GetValueForArgument(this.{name}Argument)",
+                            _ => null,
+                        };
+                        if (result != null)
+                            yield return result;
                     }
-
-                    builder = builder.Parent;
                 }
+
+                static IEnumerable<string> GenerateOptionPropertiesFromAncestors(CliCommandBuilderType builder)
+                {
+                    while (builder.Parent != null)
+                    {
+                        foreach (OptionsProperty property in builder.Parent.OptionsProperties.Where(x => x.CliCommandSymbolType == CliCommandSymbolType.GlobalOption))
+                        {
+                            string name = property.PropertySymbol.Name;
+                            yield return
+                                $"{name}: parseResult.GetValueForOption(this.GetRequiredParentBuilder<{property.CliCommandBuildTypeSymbol.CliCommandBuilderTypeSymbol.ToFullyQualifiedFormatString(NullableAnnotation.None)}>().{name}Option)";
+                        }
+
+                        builder = builder.Parent;
+                    }
+                }
+
+                IEnumerable<string> properties = OptionPropertiesInit(cliCommandBuilderType);
+                IEnumerable<string> propertiesFromAncestors = GenerateOptionPropertiesFromAncestors(cliCommandBuilderType);
+                return string.Join(",\r\n                ", propertiesFromAncestors.Concat(properties));
             }
 
-            IEnumerable<string> properties = OptionPropertiesInit(cliCommandBuilderType);
-            IEnumerable<string> propertiesFromAncestors = GenerateOptionPropertiesFromAncestors(cliCommandBuilderType);
-            return string.Join(",\r\n                ", propertiesFromAncestors.Concat(properties));
-        }
-
-        string GenerateCommandHandler()
-        {
             if (cliCommandBuilderType.CommandTypeSymbol == null)
                 return string.Empty;
 
-            return $@"
-        command.SetHandler(async (global::System.CommandLine.Invocation.InvocationContext invocationContext) =>
-        {{
-            global::System.CommandLine.Parsing.ParseResult parseResult = invocationContext.BindingContext.ParseResult;
-
-            {cliCommandBuilderType.OptionsTypeSymbol!.ToFullyQualifiedFormatString()} options = new()
-            {{
-                {GenerateOptionPropertiesInit()}
-            }};
-
-            await using global::Microsoft.Extensions.DependencyInjection.AsyncServiceScope scope = this.ServiceProvider.CreateAsyncScope();
-
-            global::BasaltHexagons.CommandLine.CommandContext context = scope.ServiceProvider.GetRequiredService<global::BasaltHexagons.CommandLine.CommandContext>();
-            context.InvocationContext = invocationContext;
-            context.Options = options;
-
-            {cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString()} command =
-                scope.ServiceProvider.GetRequiredService<{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString()}>();
-
-            await command.ExecuteAsync();
-        }});";
+            return $$"""
+                     cliCommand.SetHandler(async (global::System.CommandLine.Invocation.InvocationContext invocationContext) =>
+                     {
+                         global::System.CommandLine.Parsing.ParseResult parseResult = invocationContext.BindingContext.ParseResult;
+                     
+                         {{cliCommandBuilderType.OptionsTypeSymbol!.ToFullyQualifiedFormatString(NullableAnnotation.None)}} options = new {{cliCommandBuilderType.OptionsTypeSymbol!.ToFullyQualifiedFormatString(NullableAnnotation.None)}}(
+                            {{GenerateOptionPropertiesInit()}}
+                         );
+                     
+                         {{(cliCommandBuilderType.LanguageVersion.AsyncUsingSupported() ? "await" : string.Empty)}} using (global::Microsoft.Extensions.DependencyInjection.AsyncServiceScope scope = this.ServiceProvider.CreateAsyncScope())
+                         {
+                             global::BasaltHexagons.CommandLine.CommandContext context = scope.ServiceProvider.GetRequiredService<global::BasaltHexagons.CommandLine.CommandContext>();
+                             context.InvocationContext = invocationContext;
+                             context.Options = options;
+                         
+                             {{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString(NullableAnnotation.None)}} command =
+                                 scope.ServiceProvider.GetRequiredService<{{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString(NullableAnnotation.None)}}>();
+                         
+                             await command.ExecuteAsync();
+                         }
+                     });
+                     """;
         }
 
-        string code = @$"
-using System.CommandLine;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace {cliCommandBuilderType.CliCommandBuilderTypeSymbol.ContainingNamespace};
-
-#nullable enable
-
-{GenerateOptionsClass(cliCommandBuilderType)}
-
-partial class {cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}
-{{
-    protected string Description {{ get; }}
-
-    {GenerateCommandLineSymbolProperties()}
-
-    protected override global::System.CommandLine.Command BuildCliCommandCore()
-    {{
-        string name = this.GetCliCommandBuilderAttribute().Name;
-        global::System.CommandLine.Command command = this.CreateCliCommand(name, this.Description);
-
-        {GenerateEnrichCommand()}
-        {GenerateCommandHandler()}
-
-        this.OnCommandLineBuilt(command);
-        return command;
-    }}
-
-    partial void OnCommandLineBuilt(Command command);
-}}
-#nullable restore
-            ";
-
-        string fileName = cliCommandBuilderType.CliCommandBuilderTypeSymbol.ToDisplayString(new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces));
-        context.AddSource($"{fileName}.g.cs", code);
+        return $$"""
+                 namespace {{cliCommandBuilderType.CliCommandBuilderTypeSymbol.ContainingNamespace}}
+                 {
+                     using System.CommandLine;
+                     using Microsoft.Extensions.DependencyInjection;
+                 
+                     partial class {{cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}}
+                     {
+                         {{GenerateReadonlyProperty(cliCommandBuilderType.LanguageVersion, "protected", "string", "Description")}}
+                 
+                         {{GenerateCommandLineSymbolProperties(cliCommandBuilderType)}}
+                 
+                         protected override global::System.CommandLine.Command BuildCliCommandCore()
+                         {
+                             string name = this.GetCliCommandBuilderAttribute().Name;
+                             global::System.CommandLine.Command cliCommand = this.CreateCliCommand(name, this.Description);
+                 
+                             {{GenerateEnrichCommand(cliCommandBuilderType)}}
+                 
+                             {{GenerateCommandHandler(cliCommandBuilderType)}}
+                 
+                             this.OnCommandLineBuilt(cliCommand);
+                             return cliCommand;
+                         }
+                 
+                         partial void OnCommandLineBuilt(Command command);
+                     }
+                 }
+                 """;
     }
 
+    private static string GenerateReadonlyProperty(LanguageVersion languageVersion, string access, string type, string name)
+    {
+        return languageVersion.ReadonlyAutomaticallyImplementedPropertiesSupported()
+            ? $"{access} {type} {name} {{ get; }}"
+            : access == "private"
+                ? $"{access} {type} {name} {{ get; set; }}"
+                : $"{access} {type} {name} {{ get; private set; }}";
+    }
+
+    private static void AddSource(SourceProductionContext context, string fileName, string code)
+    {
+        SyntaxTree tree = CSharpSyntaxTree.ParseText(code);
+        SourceText formatedCode = tree.GetRoot(default).NormalizeWhitespace().GetText();
+        string formattedCode = formatedCode.ToString();
+
+        context.AddSource($"{fileName}.g.cs", formattedCode);
+    }
+
+    private static void AddSource(SourceProductionContext context, INamedTypeSymbol typeSymbol, string code)
+    {
+        string fileName = typeSymbol.ToDisplayString(new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces));
+        AddSource(context, fileName, code);
+    }
 
     [DebuggerDisplay("{CliCommandBuilderTypeSymbol} - <{CommandTypeSymbol?.Name}, {OptionsTypeSymbol?.Name}>")]
     private class CliCommandBuilderType
     {
-        public CliCommandBuilderType(INamedTypeSymbol cliCommandBuilderTypeSymbol, INamedTypeSymbol? cliCommandBuilderBaseTypeSymbol = null)
+        public CliCommandBuilderType(LanguageVersion languageVersion, NullableContextOptions nullableOptions, INamedTypeSymbol cliCommandBuilderTypeSymbol, INamedTypeSymbol? cliCommandBuilderBaseTypeSymbol = null)
         {
+            this.LanguageVersion = languageVersion;
+            this.NullableContextOptions = nullableOptions;
             this.CliCommandBuilderTypeSymbol = cliCommandBuilderTypeSymbol;
 
             (this.CommandTypeSymbol, this.OptionsTypeSymbol) = GetCommandAndOptionsType(cliCommandBuilderTypeSymbol, cliCommandBuilderBaseTypeSymbol);
-            this.OptionsProperties = this.GetSettableOptionsPropertySymbols();
+            this.OptionsProperties = this.GetOptionsPropertySymbols();
             this.Parent = this.GetParentCommandBuilder();
         }
 
+        public LanguageVersion LanguageVersion { get; }
+        public NullableContextOptions NullableContextOptions { get; set; }
         public INamedTypeSymbol CliCommandBuilderTypeSymbol { get; }
         public INamedTypeSymbol? CommandTypeSymbol { get; }
         public INamedTypeSymbol? OptionsTypeSymbol { get; }
@@ -275,7 +338,7 @@ partial class {cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}
                 if (baseTypeSymbol == null)
                     return null;
 
-                if (baseTypeSymbol is { Name: "CliCommandBuilder", ContainingNamespace: { Name: "CommandLine", ContainingNamespace: { Name: "BasaltHexagons" } } })
+                if (baseTypeSymbol is { Name: "CliCommandBuilder", ContainingNamespace: { Name: "CommandLine", ContainingNamespace.Name: "BasaltHexagons" } })
                     return baseTypeSymbol;
 
                 typeSymbol = baseTypeSymbol;
@@ -296,7 +359,7 @@ partial class {cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}
             return (commandSymbol, optionsSymbol);
         }
 
-        private IEnumerable<OptionsProperty> GetSettableOptionsPropertySymbols()
+        private IEnumerable<OptionsProperty> GetOptionsPropertySymbols()
         {
             if (this.OptionsTypeSymbol == null)
                 return Enumerable.Empty<OptionsProperty>();
@@ -304,20 +367,12 @@ partial class {cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}
             return this.OptionsTypeSymbol.GetMembers()
                 .Where(x => x is IPropertySymbol)
                 .Cast<IPropertySymbol>()
-                .Where(x => x.SetMethod != null)
                 .Select(x =>
                 {
                     AttributeData? attributeData = x.GetAttributes()
-                        .Where(x =>
-                        {
-                            if (x.AttributeClass == null) return false;
-                            if (x.AttributeClass.ToString() != typeof(CliCommandSymbolAttribute).ToString())
-                                return false;
-                            return true;
-                        })
-                        .FirstOrDefault();
+                        .FirstOrDefault(y => y.AttributeClass?.ToString() == typeof(CliCommandSymbolAttribute).ToString());
 
-                    CliCommandSymbolType commandLineSymbolType = CliCommandSymbolType.Option;
+                    CliCommandSymbolType? commandLineSymbolType = null;
                     if (attributeData?.ConstructorArguments.Any() ?? false)
                     {
                         object? value = attributeData.ConstructorArguments.First().Value;
@@ -325,8 +380,10 @@ partial class {cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}
                             commandLineSymbolType = (CliCommandSymbolType)value;
                     }
 
-                    return new OptionsProperty(this, x, commandLineSymbolType);
+                    return commandLineSymbolType == null ? null : new OptionsProperty(this, x, commandLineSymbolType.Value);
                 })
+                .Where(x => x != null)
+                .Cast<OptionsProperty>()
                 .ToList();
         }
 
@@ -334,8 +391,11 @@ partial class {cliCommandBuilderType.CliCommandBuilderTypeSymbol.Name}
         {
             AttributeData? attributeData = this.CliCommandBuilderTypeSymbol.GetAttributes()
                 .FirstOrDefault(x => x.AttributeClass?.ToString() == typeof(CliCommandBuilderAttribute).FullName);
+
+            if ((attributeData?.ConstructorArguments.Length ?? 0) < 2)
+                return null;
             INamedTypeSymbol? parentCommandBuilder = attributeData?.ConstructorArguments[1].Value as INamedTypeSymbol;
-            return parentCommandBuilder == null ? null : new CliCommandBuilderType(parentCommandBuilder);
+            return parentCommandBuilder == null ? null : new CliCommandBuilderType(this.LanguageVersion, this.NullableContextOptions, parentCommandBuilder);
         }
     }
 

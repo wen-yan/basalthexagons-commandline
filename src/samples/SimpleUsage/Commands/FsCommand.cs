@@ -5,13 +5,11 @@ using BasaltHexagons.CommandLine.Annotations;
 
 namespace SimpleUsage.Commands;
 
-#nullable disable
 partial class FsCommandOptions
 {
     [CliCommandSymbol(CliCommandSymbolType.GlobalOption)]
     public string Endpoint { get; init; }
 }
-#nullable restore
 
 [CliCommandBuilder("fs", typeof(AppCliCommandBuilder))]
 partial class FsCliCommandBuilder : CliCommandBuilder<FsCommand, FsCommandOptions>

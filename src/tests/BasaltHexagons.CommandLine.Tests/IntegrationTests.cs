@@ -30,13 +30,11 @@ public class IntegrationTests
                 }
             }
 
-            #nullable disable
             partial class FsCommandOptions
             {
                 [CliCommandSymbol(CliCommandSymbolType.GlobalOption)]
                 public string Endpoint { get; init; }
             }
-            #nullable restore
 
             [CliCommandBuilder("fs", typeof(AppCliCommandBuilder))]
             partial class FsCliCommandBuilder : CliCommandBuilder<FsCommand, FsCommandOptions>
@@ -53,13 +51,11 @@ public class IntegrationTests
                 public override async ValueTask ExecuteAsync() => await Console.Out.WriteLineAsync($"FsCommand output, endpoint: {this.Options.Endpoint}");
             }
 
-            #nullable disable
             partial class FsLsCommandOptions
             {
                 [CliCommandSymbol(CliCommandSymbolType.Argument)]
                 public string Directory { get; init; }
             }
-            #nullable restore
 
             [CliCommandBuilder("ls", typeof(FsCliCommandBuilder))]
             partial class FsLsCliCommandBuilder : CliCommandBuilder<FsLsCommand, FsLsCommandOptions>
@@ -96,12 +92,11 @@ public class IntegrationTests
                 }
             }
 
-            #nullable disable
             partial class AppCommandOptions
             {
-                public string Endpoint { get; init; }
+                [CliCommandSymbol]
+                public string Endpoint { get; }
             }
-            #nullable restore
 
             class AppCommand : Command<AppCommandOptions>
             {

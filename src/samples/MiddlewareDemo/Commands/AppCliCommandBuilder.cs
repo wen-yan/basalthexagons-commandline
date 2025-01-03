@@ -14,11 +14,9 @@ partial class AppCliCommandBuilder : RootCliCommandBuilder<AppCommand, AppComman
     }
 }
 
-#nullable disable
 partial class AppCommandOptions
 {
 }
-#nullable restore
 
 class AppCommand : Command<AppCommandOptions>
 {
