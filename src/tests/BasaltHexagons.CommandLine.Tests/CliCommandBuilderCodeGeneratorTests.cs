@@ -27,7 +27,7 @@ public class CliCommandBuilderCodeGeneratorTests
     {
         return RunTest(langVersion, "basic-csharp-1-4.cs", [("MyNamespace.FsCommandBuilder.g.cs", "basic-csharp-1-4-expected.cs")], compilerDiagnostics: CompilerDiagnostics.None);
     }
-    
+
     [DataTestMethod]
     [DataRow(LanguageVersion.CSharp5)]
     public Task Initialize_Basic_5_Test(LanguageVersion langVersion)
@@ -77,7 +77,7 @@ public class CliCommandBuilderCodeGeneratorTests
             ("MyNamespace.FsCommandBuilder.g.cs", "nullable-csharp-8+-expected.cs"),
         ]);
     }
-    
+
     [DataTestMethod]
     [DataRow(LanguageVersion.CSharp8)]
     [DataRow(LanguageVersion.CSharp9)]
@@ -108,7 +108,7 @@ public class CliCommandBuilderCodeGeneratorTests
     {
         return RunTest(langVersion, "nocommand-csharp-8+.cs", [("MyNamespace.FsCommandBuilder.g.cs", "nocommand-csharp-8+-expected.cs")]);
     }
-    
+
     [DataTestMethod]
     [DataRow(LanguageVersion.CSharp8)]
     [DataRow(LanguageVersion.CSharp9)]
@@ -156,7 +156,7 @@ public class CliCommandBuilderCodeGeneratorTests
 
         foreach ((string expectedFileName, string expected) in expectedGenerated)
         {
-            string filename = $@"BasaltHexagons.CommandLine.CodeGenerators\BasaltHexagons.CommandLine.CodeGenerators.CliCommandBuilderCodeGenerator\{expectedFileName}";
+            string filename = Path.Combine("BasaltHexagons.CommandLine.CodeGenerators", "BasaltHexagons.CommandLine.CodeGenerators.CliCommandBuilderCodeGenerator", expectedFileName);
             SourceText content = SourceText.From(LoadEmbeddedResources(expected).Result, Encoding.UTF8);
 
             test.TestState.GeneratedSources.Add((filename, content));
