@@ -104,7 +104,7 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
             {
                 yield return $"// from {cliCommandBuilderType.CliCommandBuilderTypeSymbol}";
                 yield return "[global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbol(global::BasaltHexagons.CommandLine.Annotations.CliCommandSymbolType.FromGlobalOption)]";
-                yield return $"public {property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)} {property.PropertySymbol.Name} {{ get; }}";
+                yield return $"public {property.PropertySymbol.Type} {property.PropertySymbol.Name} {{ get; }}";
             }
         }
 
@@ -115,7 +115,7 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
         List<OptionsProperty> optionsAllProperties = cliCommandBuilderType.OptionsProperties.Concat(optionsPropertiesFromAncestors.Select(x => x.OptionsProperty)).ToList();
 
         string argumentsStr = string.Join(",\r\n", optionsAllProperties
-            .Select(property => $"{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)} {property.PropertySymbol.Name}"));
+            .Select(property => $"{property.PropertySymbol.Type} {property.PropertySymbol.Name}"));
 
         string propertyListInitStr = string.Join("\r\n", optionsAllProperties
             .Select(property => $"this.{property.PropertySymbol.Name} = {property.PropertySymbol.Name};"));
@@ -150,13 +150,13 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
                 .Select(property => property.CliCommandSymbolType switch
                 {
                     CliCommandSymbolType.Option => GenerateReadonlyProperty(cliCommandBuilderType.LanguageVersion, "private",
-                        $"global::System.CommandLine.Option<{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)}>", $"{property.PropertySymbol.Name}Option"),
+                        $"global::System.CommandLine.Option<{property.PropertySymbol.Type}>", $"{property.PropertySymbol.Name}Option"),
 
                     CliCommandSymbolType.GlobalOption => GenerateReadonlyProperty(cliCommandBuilderType.LanguageVersion, "internal",
-                        $"global::System.CommandLine.Option<{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)}>", $"{property.PropertySymbol.Name}Option"),
+                        $"global::System.CommandLine.Option<{property.PropertySymbol.Type}>", $"{property.PropertySymbol.Name}Option"),
 
                     CliCommandSymbolType.Argument => GenerateReadonlyProperty(cliCommandBuilderType.LanguageVersion, "private",
-                        $"global::System.CommandLine.Argument<{property.PropertySymbol.Type.ToFullyQualifiedFormatString(property.PropertySymbol.NullableAnnotation)}>", $"{property.PropertySymbol.Name}Argument"),
+                        $"global::System.CommandLine.Argument<{property.PropertySymbol.Type}>", $"{property.PropertySymbol.Name}Argument"),
 
                     CliCommandSymbolType.FromGlobalOption => null,
                     _ => throw new ArgumentOutOfRangeException()
@@ -214,7 +214,7 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
                         {
                             string name = property.PropertySymbol.Name;
                             yield return
-                                $"{name}: parseResult.GetValueForOption(this.GetRequiredParentBuilder<{property.CliCommandBuildTypeSymbol.CliCommandBuilderTypeSymbol.ToFullyQualifiedFormatString(NullableAnnotation.None)}>().{name}Option)";
+                                $"{name}: parseResult.GetValueForOption(this.GetRequiredParentBuilder<{property.CliCommandBuildTypeSymbol.CliCommandBuilderTypeSymbol.ToFullyQualifiedFormatString()}>().{name}Option)";
                         }
 
                         builder = builder.Parent;
@@ -234,7 +234,7 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
                      {
                          global::System.CommandLine.Parsing.ParseResult parseResult = invocationContext.BindingContext.ParseResult;
                      
-                         {{cliCommandBuilderType.OptionsTypeSymbol!.ToFullyQualifiedFormatString(NullableAnnotation.None)}} options = new {{cliCommandBuilderType.OptionsTypeSymbol!.ToFullyQualifiedFormatString(NullableAnnotation.None)}}(
+                         {{cliCommandBuilderType.OptionsTypeSymbol!.ToFullyQualifiedFormatString()}} options = new {{cliCommandBuilderType.OptionsTypeSymbol!.ToFullyQualifiedFormatString()}}(
                             {{GenerateOptionPropertiesInit()}}
                          );
                      
@@ -244,8 +244,8 @@ public class CliCommandBuilderCodeGenerator : IIncrementalGenerator
                              context.InvocationContext = invocationContext;
                              context.Options = options;
                          
-                             {{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString(NullableAnnotation.None)}} command =
-                                 scope.ServiceProvider.GetRequiredService<{{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString(NullableAnnotation.None)}}>();
+                            {{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString()}} command =
+                                 scope.ServiceProvider.GetRequiredService<{{cliCommandBuilderType.CommandTypeSymbol.ToFullyQualifiedFormatString()}}>();
                          
                              await command.ExecuteAsync();
                          }

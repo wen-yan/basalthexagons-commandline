@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,6 +60,66 @@ public class CliCommandBuilderCodeGeneratorTests
         [
             ("MyNamespace.FsCommandBuilder.g.cs", "basic-csharp-8+-expected.cs"),
         ]);
+    }
+
+    [DataTestMethod]
+    [DataRow(LanguageVersion.CSharp8)]
+    [DataRow(LanguageVersion.CSharp9)]
+    [DataRow(LanguageVersion.CSharp10)]
+    [DataRow(LanguageVersion.CSharp11)]
+    [DataRow(LanguageVersion.LatestMajor)]
+    [DataRow(LanguageVersion.Latest)]
+    [DataRow(LanguageVersion.Default)]
+    public Task Initialize_Nullable_8_plus_Test(LanguageVersion langVersion)
+    {
+        return RunTest(langVersion, "nullable-csharp-8+.cs",
+        [
+            ("MyNamespace.FsCommandBuilder.g.cs", "nullable-csharp-8+-expected.cs"),
+        ]);
+    }
+    
+    [DataTestMethod]
+    [DataRow(LanguageVersion.CSharp8)]
+    [DataRow(LanguageVersion.CSharp9)]
+    [DataRow(LanguageVersion.CSharp10)]
+    [DataRow(LanguageVersion.CSharp11)]
+    [DataRow(LanguageVersion.LatestMajor)]
+    [DataRow(LanguageVersion.Latest)]
+    [DataRow(LanguageVersion.Default)]
+    public Task Initialize_GlobalOption_8_plus_Test(LanguageVersion langVersion)
+    {
+        return RunTest(langVersion, "globaloption-csharp-8+.cs",
+        [
+            ("MyNamespace.Level1CommandBuilder.g.cs", "globaloption-csharp-8+-expected-level1.cs"),
+            ("MyNamespace.Level2CommandBuilder.g.cs", "globaloption-csharp-8+-expected-level2.cs"),
+            ("MyNamespace.Level3CommandBuilder.g.cs", "globaloption-csharp-8+-expected-level3.cs"),
+        ]);
+    }
+
+    [DataTestMethod]
+    [DataRow(LanguageVersion.CSharp8)]
+    [DataRow(LanguageVersion.CSharp9)]
+    [DataRow(LanguageVersion.CSharp10)]
+    [DataRow(LanguageVersion.CSharp11)]
+    [DataRow(LanguageVersion.LatestMajor)]
+    [DataRow(LanguageVersion.Latest)]
+    [DataRow(LanguageVersion.Default)]
+    public Task Initialize_NoCommand_8_plus_Test(LanguageVersion langVersion)
+    {
+        return RunTest(langVersion, "nocommand-csharp-8+.cs", [("MyNamespace.FsCommandBuilder.g.cs", "nocommand-csharp-8+-expected.cs")]);
+    }
+    
+    [DataTestMethod]
+    [DataRow(LanguageVersion.CSharp8)]
+    [DataRow(LanguageVersion.CSharp9)]
+    [DataRow(LanguageVersion.CSharp10)]
+    [DataRow(LanguageVersion.CSharp11)]
+    [DataRow(LanguageVersion.LatestMajor)]
+    [DataRow(LanguageVersion.Latest)]
+    [DataRow(LanguageVersion.Default)]
+    public Task Initialize_NoCommand_NoOptions_8_plus_Test(LanguageVersion langVersion)
+    {
+        return RunTest(langVersion, "nocommand-nooptions-csharp-8+.cs", [("MyNamespace.FsCommandBuilder.g.cs", "nocommand-nooptions-csharp-8+-expected.cs")]);
     }
 
     private static async Task RunTest(LanguageVersion langVersion, string source, (string expectedFileName, string expected)[] expectedGenerated, CompilerDiagnostics compilerDiagnostics = CompilerDiagnostics.Errors)

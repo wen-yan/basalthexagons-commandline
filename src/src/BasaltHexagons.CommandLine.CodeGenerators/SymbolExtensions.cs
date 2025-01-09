@@ -15,7 +15,7 @@ internal static class SymbolExtensions
             .ToDictionary(x => x.Name, x => x.Type);
     }
 
-    public static string ToFullyQualifiedFormatString(this ISymbol symbol, NullableAnnotation nullableAnnotation)
+    public static string ToFullyQualifiedFormatString(this ISymbol symbol)
     {
         return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
     }
