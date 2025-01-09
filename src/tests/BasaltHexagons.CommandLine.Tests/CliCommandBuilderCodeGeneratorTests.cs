@@ -172,6 +172,11 @@ public class CliCommandBuilderCodeGeneratorTests
                                     throw new ApplicationException($"Can't load embedded resources: {resourceName}");
 
         using TextReader reader = new StreamReader(stream);
-        return await reader.ReadToEndAsync();
+        string content = await reader.ReadToEndAsync();
+
+        content = content.Replace("\r\n", "\n");
+        content = content.Replace("\r", "\n");
+        content = content.Replace("\n", Environment.NewLine);
+        return content;
     }
 }
