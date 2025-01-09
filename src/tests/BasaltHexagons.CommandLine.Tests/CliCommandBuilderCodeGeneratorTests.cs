@@ -176,7 +176,7 @@ public class CliCommandBuilderCodeGeneratorTests
 
         content = content.Replace("\r\n", "\n");
         content = content.Replace("\r", "\n");
-        content = content.Replace("\n", Environment.NewLine);
+        content = content.Replace("\n", "\r\n");
         return content;
     }
 }
